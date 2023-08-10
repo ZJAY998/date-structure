@@ -20,27 +20,6 @@ typedef struct{
 	int MaxSize;
 }SqList_new;
 
-static void InitList_new(SqList_new *l){
-
-	l->data=(int *)malloc(INITSIZE*sizeof(int));
-	l->length=0;
-	l->MaxSize=INITSIZE;
-}
-
-void IncreaseSize(SqList_new *l,int len){
-
-	char *p=l->data;
-	l->data=(int *)malloc((l->MaxSize+len)*sizeof(int));
-	//将对应的值拷贝到新区域
-	for(int i=0;i<INITSIZE;i++){
-		l->data=p[i];
-		//strncpy(l->data,(const char *)p[i],strlen((const char *)p[i])+1);
-	}
-
-	l->MaxSize=l->MaxSize+len;
-	free(p);
-
-}
 
 //初始化顺序表
 static void InitList(SqList *l){
@@ -92,10 +71,6 @@ int main(){
 	printf("result is %d\n",result);
 	printList(l);
 	
-
-	//SqList_new l_new;
-
-	//InitList_new(&l_new);
 
 	return 0;
 }
