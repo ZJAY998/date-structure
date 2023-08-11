@@ -115,6 +115,49 @@ int linkDelete(LNODE **node_head,int i,int *data){
 		
 }
 
+void linkDelByName(LNODE **l){
+
+    LNODE *pb=NULL;
+    LNODE *pf=NULL;
+
+    pb = *l;
+    if(pb==NULL){
+        printf("no link to delete \n");
+    }
+
+    else{
+    
+        printf("please input the name you del:\n");
+        char name[128]={0};
+        scanf("%s",name);
+        while(strncmp(name,pb->name,strlen(name))!=0&&pb->next!=NULL){
+	   pf = pb;
+	   pb = pb->next;	
+	}
+
+	if(strncmp(name,pb->name,strlen(name))==0){
+	    printf("found the point \n");
+
+	    if(pb==*l){
+	       *l = pb->next;
+	    }
+            
+	    else{
+	       pf->next=pb->next;
+	    
+	    }
+
+	    free(pb);
+	}
+    
+        else{
+	
+	    printf("not found the name\n");
+	}
+    }
+
+}
+
 void printLink(LNODE *node_head){
 
 
@@ -163,13 +206,10 @@ int main(){
 	printLink(p_head);
 
 
-
-
-	//get DelDate
-	int getDelDate=0;
-	linkDelete(&p_head,1,&getDelDate);
+	linkDelByName(&p_head);
 	printLink(p_head);
-	printf("Del date is %d\n",getDelDate);
+
+
 
 
 	return 0;

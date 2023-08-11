@@ -84,6 +84,46 @@ bool ListInsert(LNODE **l,int i,LNODE p_data){
 
 }
 
+void linkInsertByNum(LNODE **l){
+
+	LNODE *p_new=(LNODE *)malloc(sizeof(LNODE)+1);
+	printf("please input the value name ,num ,data:\n");
+	scanf("%s %d %d",p_new->name,&p_new->num,&p_new->data);
+	LNODE *pb,*pf;
+	pb = pf = *l;
+
+	if(pb==NULL){
+	   *l=p_new;
+	   p_new->next=NULL;
+	   return;
+	}
+
+	//按num 大小插入
+	while(pb->next!=NULL&&p_new->num>=pb->num){
+		pf=pb;
+		pb=pb->next;
+	}
+
+	if(pb->num>p_new->num){
+
+	    //头结点
+	    if(pb==*l){
+	    	p_new->next=pb;
+		*l=p_new;
+	    }
+
+	    else{
+	        pf->next=p_new;
+		p_new->next=pb;   
+	    }
+	}
+
+	else{
+	    pb->next=p_new;
+	    p_new->next=NULL;
+	}
+
+}
 
 void printLink(LNODE *node_head){
 
@@ -126,20 +166,20 @@ int main(){
 	p_data3.num=333;
 	p_data3.data=3;
 	
-	ListInsert(&p_head,1,p_data1);
-	ListInsert(&p_head,2,p_data2);
-	ListInsert(&p_head,3,p_data3);
+	//ListInsert(&p_head,1,p_data1);
+	//ListInsert(&p_head,2,p_data2);
+	//ListInsert(&p_head,3,p_data3);
+
+	//printLink(p_head);
+
+
+	linkInsertByNum(&p_head);
+	linkInsertByNum(&p_head);
+	linkInsertByNum(&p_head);
+	linkInsertByNum(&p_head);
+	
 
 	printLink(p_head);
-
-
-
-
-	//get DelDate
-	//int getDelDate=0;
-	//linkDelete(&p_head,1,&getDelDate);
-	//printLink(p_head);
-	//printf("Del date is %d\n",getDelDate);
 
 
 	return 0;
