@@ -36,70 +36,97 @@ void double_link_create(DNODE **l,DNODE *p_new){
     }
 }
 
-void double_link_insert_num(DNODE **l,DNODE *p_new){
-
-    DNODE *pb,*pf;
-    pb=*l;
-
-    if(*l==NULL){
-        *l=p_new;
-	p_new->front=NULL;
-	p_new->next=NULL;
-	return;
-    }
-
-    //插入的数比之前的数大 遍历至后
-    while(p_new->num>=(*l)->num && pb->next!=NULL){
-      pb = pb->next;
-    }
-
-    //插入的数比前的小  2种情况 
-    if(p_new->num < (*l)->num){
-       
-	//插入为头结点 插在头结点前面
-        if(pb==*l){
-            p_new->next=pb;
-	    (*l)->front=p_new;
-	    p_new->front=NULL;
-	    *l=p_new;
-        }
-	else
-	//不为头结点  pf 记录上个结点位置
-	{
-            pf =pb->front;
-
-	    p_new->next=pb;
-	    p_new->front=pf;
-	    pf->next=p_new;
-	    pb->front=p_new;
-	}
-    }
-   
-    else{
-      pb->next=p_new;
-      p_new->front=pb;
-      p_new->next=NULL;
-    }
-   
-}
 
 void double_link_print(DNODE *l){
 
 	DNODE *p_move=l;
+
+	if(p_move==NULL){
 	
-	while(p_move->next!=NULL){
+            printf("no point\n");
+	    return;
+	}
+
+	while(p_move!=NULL){
 	    printf("name is %s,num is %d\n",p_move->name,p_move->num);
 	    p_move=p_move->next;
 	}
 
-	printf("name is %s,num is %d\n",p_move->name,p_move->num);
+//	printf("name is %s,num is %d\n",p_move->name,p_move->num);
 //	printf("-------------------\n");
+	
 //	while(p_move!=NULL){
 //	    printf("name is %s,num is %d\n",p_move->name,p_move->num);
 //	    p_move=p_move->front;
 //	}
+
 }
 
+
+void double_link_del_by_num(DNODE **l){
+
+    DNODE *pb,*pf;
+    pb=*l;
+    if(*l==NULL){
+	 printf("link is empty\n");
+         return;
+    }
+
+
+    int num=-1;
+    printf("input the num you del:");
+    scanf("%d",&num);
+
+
+    while((pb->num!=num) && (pb->next!=NULL)){
+       pb=pb->next;
+    }
+
+    //2 种情况 头结点 不是头 
+    if(pb->num==num){
+
+	if(pb==*l){
+
+            //只有一个结点
+	    if((*l)->next==NULL){
+	        *l=pb->next;
+	    }
+	    else//多个节点
+	    {
+	        *l=pb->next;
+	        (*l)->front=NULL;   
+	    }        
+
+        }
+   
+       	else{
+        //其他节点
+
+            if(pb->next!=NULL){
+	
+	        pf=pb->front;//pf 指向pb的前一个节点
+	        pf->next=pb->next;
+	        (pb->next)->front=pf;
+	    }else{
+	    
+	        //删除尾结点
+	        pf=pb->front;
+                pf->next=NULL;
+	       
+	        }
+           }
+ 
+        free(pb);
+    }
+
+    else{
+    
+        printf("not found the num to delte\n");
+    
+    }	
+
+
+}
 
 int main(){
 
@@ -107,6 +134,7 @@ int main(){
     DNODE *head = NULL;
     DNODE *p_new = NULL;
 
+    
     int num ,i;
     printf("input the link you create:");
     scanf("%d",&num);
@@ -124,14 +152,11 @@ int main(){
 
     double_link_print(head);
 
-    //insert p_new_insert
-    DNODE *p_new1=NULL;
-    p_new1=(DNODE*)malloc(sizeof(DNODE));
-    printf("input p_new insert1 the name  num \n");
-    scanf("%s %d",p_new1->name,&p_new1->num);
 
-    double_link_insert_num(&head,p_new1);
+    double_link_del_by_num(&head);
     double_link_print(head);
-
+    
+    double_link_del_by_num(&head);
+    double_link_print(head);
     return 0;
 }
