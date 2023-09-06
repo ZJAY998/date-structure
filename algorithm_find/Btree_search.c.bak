@@ -1,0 +1,157 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <glib.h>
+
+typedef struct BitNode{
+
+    int data;
+    struct BitNode *lchild,*rchild;
+} BitNode,*BiTree;
+
+
+
+//search the key in tree
+// found 0 , not found -1
+int SearchBST(BiTree T,int key,BiTree f,BiTree *p)
+{
+   printf("enter search \n");
+   //Tree is NULL
+   if(!T){
+       *p = f;
+       g_warning("in searchBST , tree is NULL\n");
+
+       return -1;
+   }
+
+
+   else if(key == T->data){
+       *p = T;
+       g_warning("in searchBST , key == t->data \n");
+
+       return 0;
+   }
+
+   else if(key < T->data){
+       return SearchBST(T->lchild,key,T,p);
+   }
+
+   else{
+       return SearchBST(T->rchild,key,T,p);
+   }
+}
+
+
+int InsertBST(BiTree *T,int key){
+    BiTree p,s;
+    
+    //not found ,tree is no key
+    if(SearchBST(T,key,NULL,&p)) {
+        printf("enter malloc the BiTnode\n");
+        s = (BiTree)malloc(sizeof(BiTNode));
+	s->data = key;
+        s->lchild = s->rchild = NULL;
+     
+	if(!p){
+	   T = s; // s -> root
+	}
+
+	else if (key < p->data){ //left
+       	   printf("lchild , s->data is %d \n",s->data);
+	   p->lchild = s;
+	}
+
+	else{
+       	   printf("rchild , s->data is %d \n",s->data);
+	   p->rchild = s;
+	}
+
+	return 0;
+    }
+
+    else{
+	return -1;
+    }
+}
+
+
+int Delete(BiTree *p){
+    BiTree q,s;
+    
+    if( (*p)->rchild == NULL){
+        q = *p;
+        *p = (*p)->lchild;
+	free(q);
+    }
+    
+    else if((*p)->rchild == NULL){
+        q = *p;
+	*p = (*p)->rchild;
+        free(q);
+    }
+
+    else{
+	q = *p;
+	s = (*p)->lchild;
+	while(s->rchild){
+	   q = s;
+	   s = s->rchild;
+	}
+
+	(*p)->data = s->data;
+	if(q!=*p){
+	     q->rchild = s->lchild;
+	}
+	else{
+	     q->lchild = s->lchild;
+	}
+
+	free(s);
+    }
+
+    return 0;
+}
+
+//delete the tree
+int DeleteBST(BiTree *T,int key){
+    if(!*T) //  tree null
+    {
+        return -1;
+    }
+
+    else
+    {
+        if(key == (*T)->data)
+	{
+	    return Delete(T);
+	}
+
+	else if (key < (*T)->data){
+	    return DeleteBST(&(*T)->lchild,key);
+	}
+
+	else
+	    return DeleteBST(&(*T)->rchild,key);
+    
+    }
+}
+
+
+int main(){
+    
+    BiTree tree = NULL;
+    //tree = (BiTree)malloc(sizeof(BiTNode));
+    //tree->data = 100;
+    //tree->lchild = tree->rchild = NULL;
+    
+    //BiTree p,s;
+
+    //printf("search flag is %d\n",SearchBST(tree,100,NULL,&p));
+    //printf("search flag is %d\n",SearchBST(tree,999,NULL,&p));
+    //printf("search flag is %d\n",SearchBST(tree,198,NULL,&p));
+
+    printf("flag insert is %d\n",InsertBST(tree,50));
+    printf("flag insert is %d\n",InsertBST(tree,30));
+    printf("flag insert is %d\n",InsertBST(tree,59));
+
+    return 0;
+}
