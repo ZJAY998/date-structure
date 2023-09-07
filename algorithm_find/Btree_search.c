@@ -5,7 +5,7 @@
 typedef struct BitNode{
 
     int data;
-    struct BitNode *lchild,*rchild;
+    struct BitNode *lchild,*rchild,*parent;;
 } BitNode,*BiTree;
 
 //search the key in tree
@@ -75,65 +75,78 @@ int InsertBST(BitNode **T,int key){
 }
 
 
-int Delete(BiTree *p){
-    BiTree q,s;
-    
-    if( (*p)->rchild == NULL){
-        q = *p;
-        *p = (*p)->lchild;
-	free(q);
-    }
-    
-    else if((*p)->rchild == NULL){
-        q = *p;
-	*p = (*p)->rchild;
-        free(q);
-    }
+void DeleteBST(BitNode* T,int key)
+{
+// find the key point
+    BitNode* q,*s;
+    BitNode* node = SearchBST(T,key,NULL,&s);
 
-    else{
-	q = *p;
-	s = (*p)->lchild;
-	while(s->rchild){
-	   q = s;
-	   s = s->rchild;
-	}
 
-	(*p)->data = s->data;
-	if(q!=*p){
-	     q->rchild = s->lchild;
-	}
-	else{
-	     q->lchild = s->lchild;
-	}
-
-	free(s);
-    }
-
-    return 0;
-}
-
-//delete the tree
-int DeleteBST(BiTree *T,int key){
-    if(!*T) //  tree null
+    if(node == NULL)
     {
-        return -1;
+        printf("no node found in tree\n");
+	return;
     }
-
-    else
-    {
-        if(key == (*T)->data)
+    else{//exist the key in tree
+    
+        //leavf point 
+	if(node->lchild == NULL && node->rchild == NULL )
 	{
-	    return Delete(T);
+	    printf("leavf point ,delete it\n");
+	    node->parent->lchild = node->parent->rchild = NULL;
+	    free(node);
 	}
-
-	else if (key < (*T)->data){
-	    return DeleteBST(&(*T)->lchild,key);
+	else if (node->rchild == NULL) //if right null , connect left
+	{
+	    printf("only left exit,delete it\n");
+	    node = node->lchild; 
+	    
+	    //parent and son point connect
+	    if(q == q->parent->rchild){
+	        q->parent->rchild = node;
+	    }
+	    else{
+	        q->parent->lchild = node;
+	    
+	    }
+	    free(q);
 	}
-
-	else
-	    return DeleteBST(&(*T)->rchild,key);
     
+	else if(node->lchild == NULL){ //left null ,connect right
+	    printf("only right exit,delete\n");
+	    q = node;
+	    node = node->rchild;
+	    
+	    if(q == q->parent->rchild)
+	        q->parent->rchild = node;
+	    else
+		q->parent->lchild = node;
+	    free(q);
+	}
+
+	else // left and right not null
+	{
+	
+	    q = node;
+	    s = node->lchild;    //s ->left 
+            while(s->rchild)
+	    {
+	        q = s;
+	        s = s->rchild;
+	    }
+
+	    node->data = s->data;
+	    
+	    if(q!=node)
+	        q->rchild = s->lchild;
+	    else
+		q->lchild = s->lchild;
+	    free(s);
+	
+	}
+
     }
+
 }
 
 
@@ -156,13 +169,6 @@ int main(){
     }
    
 
-    //if(NULL!=bit){
-    //   printf("tree data is %d\n",bit->data);
-    //}
-
-    //tree = (BiTree)malloc(sizeof(BiTNode));
-    //tree->data = 100;
-    //tree->lchild = tree->rchild = NULL;
     
 //   BiTree p,s;
 //   printf("search flag  %s\n",SearchBST(tree,100,NULL,&p));
